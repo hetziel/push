@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
             background: linear-gradient(135deg, #6e8efb, #a777e3);
             color: #333;
@@ -20,6 +22,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
@@ -29,18 +32,21 @@
             padding: 30px;
             margin-top: 20px;
         }
+
         h1 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 20px;
             font-size: 2.2rem;
         }
+
         .description {
             text-align: center;
             margin-bottom: 25px;
             color: #555;
             line-height: 1.6;
         }
+
         .btn {
             background: #3498db;
             color: white;
@@ -54,22 +60,27 @@
             margin: 20px auto;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
+
         .btn:hover {
             background: #2980b9;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
+
         .btn:active {
             transform: translateY(0);
         }
+
         .btn-alternative {
             background: #2ecc71;
             box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
+
         .btn-alternative:hover {
             background: #27ae60;
             box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
         }
+
         .logs-container {
             background: #f8f9fa;
             border-radius: 10px;
@@ -79,6 +90,7 @@
             overflow-y: auto;
             border: 1px solid #e0e0e0;
         }
+
         .log-header {
             display: flex;
             justify-content: space-between;
@@ -86,10 +98,12 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #3498db;
         }
+
         .log-title {
             font-weight: bold;
             color: #2c3e50;
         }
+
         .clear-btn {
             background: #e74c3c;
             color: white;
@@ -99,9 +113,11 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         .clear-btn:hover {
             background: #c0392b;
         }
+
         .log-entry {
             padding: 10px;
             border-bottom: 1px solid #eee;
@@ -109,15 +125,18 @@
             display: flex;
             align-items: flex-start;
         }
+
         .log-time {
             color: #7f8c8d;
             margin-right: 15px;
             flex-shrink: 0;
         }
+
         .log-message {
             flex-grow: 1;
             word-break: break-word;
         }
+
         .status {
             padding: 15px;
             border-radius: 10px;
@@ -125,16 +144,19 @@
             text-align: center;
             font-weight: bold;
         }
+
         .status.secure {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
+
         .status.not-secure {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
         .info-box {
             background: #d1ecf1;
             color: #0c5460;
@@ -143,6 +165,7 @@
             margin-bottom: 20px;
             border: 1px solid #bee5eb;
         }
+
         .solution {
             background: #fff3cd;
             color: #856404;
@@ -151,6 +174,7 @@
             margin: 20px 0;
             border: 1px solid #ffeeba;
         }
+
         .code {
             background: #2d3748;
             color: #e2e8f0;
@@ -161,10 +185,12 @@
             font-family: monospace;
             font-size: 14px;
         }
+
         .tabs {
             display: flex;
             margin-bottom: 15px;
         }
+
         .tab {
             padding: 10px 20px;
             background: #e9ecef;
@@ -172,23 +198,27 @@
             margin-right: 5px;
             cursor: pointer;
         }
+
         .tab.active {
             background: #3498db;
             color: white;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>🔔 Solución Error de Notificaciones</h1>
-        
+
         <div class="info-box">
-            <strong>Error detectado:</strong> "Failed to construct 'Notification': Illegal constructor. Use ServiceWorkerRegistration.showNotification() instead."
+            <strong>Error detectado:</strong> "Failed to construct 'Notification': Illegal constructor. Use
+            ServiceWorkerRegistration.showNotification() instead."
         </div>
-        
+
         <div class="solution">
             <h3>¿Por qué ocurre este error?</h3>
-            <p>Este error sucede cuando intentas usar el constructor <code>new Notification()</code> en un contexto donde no está permitido. Las causas comunes son:</p>
+            <p>Este error sucede cuando intentas usar el constructor <code>new Notification()</code> en un contexto
+                donde no está permitido. Las causas comunes son:</p>
             <ul>
                 <li>Estás en un contexto que no es seguro (no HTTPS)</li>
                 <li>Tu página está registrando un Service Worker</li>
@@ -200,38 +230,38 @@
             <div class="tab active" onclick="showSolution('solution1')">Solución 1: Sin Service Worker</div>
             <div class="tab" onclick="showSolution('solution2')">Solución 2: Con Service Worker</div>
         </div>
-        
+
         <div id="solution1" class="solution-content">
             <h3>Solución 1: Verificar contexto seguro</h3>
             <p>Si no estás usando un Service Worker, verifica que estés en un contexto seguro (HTTPS):</p>
-            
+
             <div id="status-container" class="status">
                 Comprobando contexto seguro...
             </div>
-            
+
             <button id="notify-btn" class="btn">Probar Notificación Básica</button>
         </div>
-        
+
         <div id="solution2" class="solution-content" style="display:none">
             <h3>Solución 2: Usar Service Worker para notificaciones</h3>
             <p>Si tienes un Service Worker registrado, debes usar su API para mostrar notificaciones:</p>
-            
+
             <div class="code">
-// En tu página principal (script)
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
-        registration.showNotification('Título', {
-            body: 'Cuerpo de la notificación',
-            icon: '/icon.png'
-        });
-    });
-}
+                // En tu página principal (script)
+                if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                registration.showNotification('Título', {
+                body: 'Cuerpo de la notificación',
+                icon: '/icon.png'
+                });
+                });
+                }
             </div>
-            
+
             <button id="notify-sw-btn" class="btn btn-alternative">Probar con Service Worker</button>
             <p class="description">Nota: Necesitas tener un Service Worker registrado para que esto funcione.</p>
         </div>
-        
+
         <div class="logs-container">
             <div class="log-header">
                 <div class="log-title">Registro de Eventos</div>
@@ -246,14 +276,14 @@ if ('serviceWorker' in navigator) {
         const logEntries = document.getElementById('log-entries');
         const clearLogsBtn = document.getElementById('clear-logs');
         const statusContainer = document.getElementById('status-container');
-        
+
         // Función para mostrar solución
         function showSolution(id) {
             document.querySelectorAll('.solution-content').forEach(el => {
                 el.style.display = 'none';
             });
             document.getElementById(id).style.display = 'block';
-            
+
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -264,13 +294,13 @@ if ('serviceWorker' in navigator) {
         function addLog(message) {
             const logEntry = document.createElement('div');
             logEntry.className = 'log-entry';
-            
+
             const time = new Date().toLocaleTimeString();
             logEntry.innerHTML = `
                 <div class="log-time">${time}</div>
                 <div class="log-message">${message}</div>
             `;
-            
+
             logEntries.appendChild(logEntry);
             // Auto-scroll to the bottom
             logEntries.parentElement.scrollTop = logEntries.parentElement.scrollHeight;
@@ -307,29 +337,29 @@ if ('serviceWorker' in navigator) {
             try {
                 if (Notification.permission === "granted") {
                     addLog("Permiso ya concedido, mostrando notificación...");
-                    
+
                     // Esta es la forma correcta de crear notificaciones en el contexto principal
                     const notification = new Notification("¡Notificación de prueba!", {
                         body: "Esta es una notificación básica sin service worker",
                         icon: "https://via.placeholder.com/64/3498db/ffffff?text=OK"
                     });
-                    
+
                     notification.onclick = () => {
                         addLog("Notificación clickeada");
                     };
-                    
+
                     addLog("Notificación básica mostrada con éxito");
                 } else if (Notification.permission !== "denied") {
                     addLog("Solicitando permiso para notificaciones...");
                     const permission = await Notification.requestPermission();
                     addLog("Permiso obtenido: " + permission);
-                    
+
                     if (permission === "granted") {
                         const notification = new Notification("¡Hola!", {
                             body: "Gracias por permitir notificaciones",
                             icon: "https://via.placeholder.com/64/2ecc71/ffffff?text=HI"
                         });
-                        
+
                         addLog("Notificación mostrada con éxito después de conceder permiso");
                     } else {
                         addLog("El usuario denegó el permiso para notificaciones");
@@ -347,25 +377,16 @@ if ('serviceWorker' in navigator) {
 
         // Solución 2: Notificación con service worker (solo para demostración)
         document.getElementById('notify-sw-btn').addEventListener('click', async () => {
-            addLog("=== Probando notificación con Service Worker ===");
-            
-            if (!('serviceWorker' in navigator)) {
-                addLog("Service Worker no es compatible con este navegador");
-                return;
-            }
-            
             try {
-                const registration = await navigator.serviceWorker.getRegistration();
-                if (registration) {
-                    addLog("Service Worker encontrado. Deberías usar registration.showNotification()");
-                    addLog("Para implementar esto, necesitas:");
-                    addLog("1. Registrar un service worker");
-                    addLog("2. Implementar la lógica de notificaciones en el service worker");
-                } else {
-                    addLog("No hay Service Worker registrado. Esta solución no aplica.");
-                }
+                const registration = await navigator.serviceWorker.ready;
+                await registration.showNotification('Notificación con SW', {
+                    body: 'Esta notificación se muestra a través del Service Worker',
+                    icon: 'https://via.placeholder.com/64/2ecc71/ffffff?text=SW',
+                    tag: 'sw-notification'
+                });
+                addLog('Notificación enviada a través del Service Worker');
             } catch (error) {
-                addLog("Error al verificar service worker: " + error.message);
+                addLog('Error con notificación SW: ' + error.message);
             }
         });
 
@@ -374,7 +395,7 @@ if ('serviceWorker' in navigator) {
         addLog("User Agent: " + navigator.userAgent);
         addLog("Protocolo: " + window.location.protocol);
         addLog("Contexto seguro: " + window.isSecureContext);
-        
+
         // Verificar si hay service workers registrados
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
@@ -382,7 +403,7 @@ if ('serviceWorker' in navigator) {
                     addLog("⚠️ Se encontraron " + registrations.length + " service workers registrados");
                     addLog("Esto podría ser la causa del error de constructor ilegal");
                     registrations.forEach((reg, idx) => {
-                        addLog("Service Worker " + (idx+1) + ": " + reg.scope);
+                        addLog("Service Worker " + (idx + 1) + ": " + reg.scope);
                     });
                 } else {
                     addLog("No hay service workers registrados");
@@ -390,5 +411,31 @@ if ('serviceWorker' in navigator) {
             });
         }
     </script>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('Service Worker registrado con éxito:', registration);
+
+                    // Ahora puedes usar notificaciones a través del Service Worker
+                    document.getElementById('notify-sw-btn').addEventListener('click', async () => {
+                        if (registration.active) {
+                            registration.showNotification('Desde Service Worker', {
+                                body: 'Esta notificación usa el Service Worker',
+                                icon: 'https://via.placeholder.com/64/3498db/ffffff?text=SW'
+                            });
+                        }
+                    });
+
+                } catch (error) {
+                    console.error('Error registrando Service Worker:', error);
+                }
+            });
+        }
+    </script>
 </body>
+
 </html>
