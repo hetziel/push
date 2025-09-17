@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificaciones con Logs</title>
+    <title>Solución Error de Notificaciones</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,11 +21,11 @@
             align-items: center;
         }
         .container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             width: 90%;
-            max-width: 700px;
+            max-width: 800px;
             padding: 30px;
             margin-top: 20px;
         }
@@ -51,7 +51,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             display: block;
-            margin: 0 auto 25px;
+            margin: 20px auto;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
         .btn:hover {
@@ -61,6 +61,14 @@
         }
         .btn:active {
             transform: translateY(0);
+        }
+        .btn-alternative {
+            background: #2ecc71;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        .btn-alternative:hover {
+            background: #27ae60;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
         }
         .logs-container {
             background: #f8f9fa;
@@ -127,7 +135,7 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .notification-info {
+        .info-box {
             background: #d1ecf1;
             color: #0c5460;
             padding: 15px;
@@ -135,26 +143,94 @@
             margin-bottom: 20px;
             border: 1px solid #bee5eb;
         }
+        .solution {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #ffeeba;
+        }
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔔 Notificaciones con Logs</h1>
+        <h1>🔔 Solución Error de Notificaciones</h1>
         
-        <p class="description">
-            Esta página prueba las notificaciones en el navegador y muestra los logs directamente en la página.
-            Los logs te ayudarán a depurar problemas con las notificaciones en GitHub Pages.
-        </p>
-        
-        <div id="status-container" class="status">
-            Comprobando contexto seguro...
+        <div class="info-box">
+            <strong>Error detectado:</strong> "Failed to construct 'Notification': Illegal constructor. Use ServiceWorkerRegistration.showNotification() instead."
         </div>
         
-        <div class="notification-info">
-            <strong>Nota:</strong> Las notificaciones requieren HTTPS para funcionar. GitHub Pages proporciona HTTPS, pero si tienes problemas, verifica que la URL comience con "https://".
+        <div class="solution">
+            <h3>¿Por qué ocurre este error?</h3>
+            <p>Este error sucede cuando intentas usar el constructor <code>new Notification()</code> en un contexto donde no está permitido. Las causas comunes son:</p>
+            <ul>
+                <li>Estás en un contexto que no es seguro (no HTTPS)</li>
+                <li>Tu página está registrando un Service Worker</li>
+                <li>El navegador requiere que las notificaciones se muestren a través del Service Worker</li>
+            </ul>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showSolution('solution1')">Solución 1: Sin Service Worker</div>
+            <div class="tab" onclick="showSolution('solution2')">Solución 2: Con Service Worker</div>
         </div>
         
-        <button id="notify-btn" class="btn">Mostrar Notificación</button>
+        <div id="solution1" class="solution-content">
+            <h3>Solución 1: Verificar contexto seguro</h3>
+            <p>Si no estás usando un Service Worker, verifica que estés en un contexto seguro (HTTPS):</p>
+            
+            <div id="status-container" class="status">
+                Comprobando contexto seguro...
+            </div>
+            
+            <button id="notify-btn" class="btn">Probar Notificación Básica</button>
+        </div>
+        
+        <div id="solution2" class="solution-content" style="display:none">
+            <h3>Solución 2: Usar Service Worker para notificaciones</h3>
+            <p>Si tienes un Service Worker registrado, debes usar su API para mostrar notificaciones:</p>
+            
+            <div class="code">
+// En tu página principal (script)
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification('Título', {
+            body: 'Cuerpo de la notificación',
+            icon: '/icon.png'
+        });
+    });
+}
+            </div>
+            
+            <button id="notify-sw-btn" class="btn btn-alternative">Probar con Service Worker</button>
+            <p class="description">Nota: Necesitas tener un Service Worker registrado para que esto funcione.</p>
+        </div>
         
         <div class="logs-container">
             <div class="log-header">
@@ -166,10 +242,23 @@
     </div>
 
     <script>
-        const notifyBtn = document.getElementById('notify-btn');
+        // Elementos DOM
         const logEntries = document.getElementById('log-entries');
         const clearLogsBtn = document.getElementById('clear-logs');
         const statusContainer = document.getElementById('status-container');
+        
+        // Función para mostrar solución
+        function showSolution(id) {
+            document.querySelectorAll('.solution-content').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById(id).style.display = 'block';
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
 
         // Función para agregar logs al body
         function addLog(message) {
@@ -204,11 +293,10 @@
             addLog('AVISO: No estamos en un contexto seguro. Las notificaciones no funcionarán.');
         }
 
-        // Función mejorada con más logging para debugging
-        notifyBtn.addEventListener('click', async () => {
-            addLog("Intentando mostrar notificación...");
+        // Solución 1: Notificación básica (sin service worker)
+        document.getElementById('notify-btn').addEventListener('click', async () => {
+            addLog("=== Probando notificación básica ===");
             addLog("Permiso de notificación actual: " + Notification.permission);
-            addLog("Contexto seguro: " + window.isSecureContext);
 
             if (!("Notification" in window)) {
                 addLog("Este navegador no soporta notificaciones");
@@ -219,39 +307,88 @@
             try {
                 if (Notification.permission === "granted") {
                     addLog("Permiso ya concedido, mostrando notificación...");
-                    new Notification("¡Hola de nuevo!", {
-                        body: "Esta es una notificación de prueba",
-                        icon: "https://via.placeholder.com/64x64" // Icono opcional
+                    
+                    // Esta es la forma correcta de crear notificaciones en el contexto principal
+                    const notification = new Notification("¡Notificación de prueba!", {
+                        body: "Esta es una notificación básica sin service worker",
+                        icon: "https://via.placeholder.com/64/3498db/ffffff?text=OK"
                     });
-                    addLog("Notificación mostrada con éxito");
+                    
+                    notification.onclick = () => {
+                        addLog("Notificación clickeada");
+                    };
+                    
+                    addLog("Notificación básica mostrada con éxito");
                 } else if (Notification.permission !== "denied") {
                     addLog("Solicitando permiso para notificaciones...");
                     const permission = await Notification.requestPermission();
                     addLog("Permiso obtenido: " + permission);
                     
                     if (permission === "granted") {
-                        new Notification("¡Hola!", {
+                        const notification = new Notification("¡Hola!", {
                             body: "Gracias por permitir notificaciones",
-                            icon: "https://via.placeholder.com/64x64"
+                            icon: "https://via.placeholder.com/64/2ecc71/ffffff?text=HI"
                         });
+                        
                         addLog("Notificación mostrada con éxito después de conceder permiso");
                     } else {
                         addLog("El usuario denegó el permiso para notificaciones");
                     }
                 } else {
-                    addLog("El permiso de notificación fue denegado previamente. Debes habilitarlo manualmente en la configuración del navegador.");
+                    addLog("El permiso de notificación fue denegado previamente.");
                     alert("Has bloqueado las notificaciones. Por favor, habilita los permisos en la configuración de tu navegador.");
                 }
             } catch (error) {
                 addLog("Error con notificaciones: " + error.message);
+                addLog("Posible solución: Verifica que no tengas un service worker registrado que interfiera");
                 console.error("Error con notificaciones:", error);
+            }
+        });
+
+        // Solución 2: Notificación con service worker (solo para demostración)
+        document.getElementById('notify-sw-btn').addEventListener('click', async () => {
+            addLog("=== Probando notificación con Service Worker ===");
+            
+            if (!('serviceWorker' in navigator)) {
+                addLog("Service Worker no es compatible con este navegador");
+                return;
+            }
+            
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    addLog("Service Worker encontrado. Deberías usar registration.showNotification()");
+                    addLog("Para implementar esto, necesitas:");
+                    addLog("1. Registrar un service worker");
+                    addLog("2. Implementar la lógica de notificaciones en el service worker");
+                } else {
+                    addLog("No hay Service Worker registrado. Esta solución no aplica.");
+                }
+            } catch (error) {
+                addLog("Error al verificar service worker: " + error.message);
             }
         });
 
         // Información inicial
         addLog("Página cargada correctamente");
         addLog("User Agent: " + navigator.userAgent);
-        addLog("HTTPS: " + window.location.protocol === "https:");
+        addLog("Protocolo: " + window.location.protocol);
+        addLog("Contexto seguro: " + window.isSecureContext);
+        
+        // Verificar si hay service workers registrados
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                if (registrations.length > 0) {
+                    addLog("⚠️ Se encontraron " + registrations.length + " service workers registrados");
+                    addLog("Esto podría ser la causa del error de constructor ilegal");
+                    registrations.forEach((reg, idx) => {
+                        addLog("Service Worker " + (idx+1) + ": " + reg.scope);
+                    });
+                } else {
+                    addLog("No hay service workers registrados");
+                }
+            });
+        }
     </script>
 </body>
 </html>
