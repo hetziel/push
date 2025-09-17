@@ -259,6 +259,7 @@
             </div>
 
             <button id="notify-sw-btn" class="btn btn-alternative">Probar con Service Worker</button>
+            <button id="notify-sw-push-btn" class="btn">Simular Push desde SW</button>
             <p class="description">Nota: Necesitas tener un Service Worker registrado para que esto funcione.</p>
         </div>
 
@@ -389,6 +390,20 @@
                 addLog('Error con notificación SW: ' + error.message);
             }
         });
+
+        // **NUEVO** Solución 3: Simular evento Push desde el SW
+        document.getElementById('notify-sw-push-btn').addEventListener('click', () => {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'SHOW_TEST_NOTIFICATION'
+                });
+                addLog('Enviando mensaje al Service Worker para simular un evento push.');
+            } else {
+                addLog('El Service Worker no está activo o no está controlando la página.');
+                alert('El Service Worker no está listo. Recarga la página o inténtalo de nuevo.');
+            }
+        });
+
 
         // Información inicial
         addLog("Página cargada correctamente");

@@ -89,6 +89,23 @@ self.addEventListener('notificationclose', (event) => {
 });
 
 // Manejar errores de notificaciones
+// Manejar errores de notificaciones
 self.addEventListener('pushsubscriptionchange', (event) => {
     console.log('Suscripción push cambiada:', event);
+});
+
+// Listener para simular una notificación desde el cliente
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SHOW_TEST_NOTIFICATION') {
+    console.log('Mostrando notificación de prueba desde el Service Worker');
+    const options = {
+      body: 'Este es el cuerpo de la notificación de prueba.',
+      icon: 'https://via.placeholder.com/64/2ecc71/ffffff?text=TEST',
+      badge: 'https://via.placeholder.com/32/2ecc71/ffffff?text=!',
+      tag: 'test-notification'
+    };
+    event.waitUntil(
+      self.registration.showNotification('🔔 Notificación de Prueba', options)
+    );
+  }
 });
