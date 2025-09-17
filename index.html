@@ -1,13 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Push Notifications Example</title>
+    <title>Notificaciones con Logs</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 700px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+        }
+        .description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto 25px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .logs-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        .log-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .clear-btn:hover {
+            background: #c0392b;
+        }
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+            display: flex;
+            align-items: flex-start;
+        }
+        .log-time {
+            color: #7f8c8d;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .log-message {
+            flex-grow: 1;
+            word-break: break-word;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .status.secure {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.not-secure {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .notification-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #bee5eb;
+        }
+    </style>
 </head>
 <body>
-    <h1>Push Notifications Example Vanilla</h1>
-    <button id="notify-btn">Show Notification</button>
-    <script src="main.js"></script>
+    <div class="container">
+        <h1>🔔 Notificaciones con Logs</h1>
+        
+        <p class="description">
+            Esta página prueba las notificaciones en el navegador y muestra los logs directamente en la página.
+            Los logs te ayudarán a depurar problemas con las notificaciones en GitHub Pages.
+        </p>
+        
+        <div id="status-container" class="status">
+            Comprobando contexto seguro...
+        </div>
+        
+        <div class="notification-info">
+            <strong>Nota:</strong> Las notificaciones requieren HTTPS para funcionar. GitHub Pages proporciona HTTPS, pero si tienes problemas, verifica que la URL comience con "https://".
+        </div>
+        
+        <button id="notify-btn" class="btn">Mostrar Notificación</button>
+        
+        <div class="logs-container">
+            <div class="log-header">
+                <div class="log-title">Registro de Eventos</div>
+                <button id="clear-logs" class="clear-btn">Limpiar</button>
+            </div>
+            <div id="log-entries"></div>
+        </div>
+    </div>
+
+    <script>
+        const notifyBtn = document.getElementById('notify-btn');
+        const logEntries = document.getElementById('log-entries');
+        const clearLogsBtn = document.getElementById('clear-logs');
+        const statusContainer = document.getElementById('status-container');
+
+        // Función para agregar logs al body
+        function addLog(message) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            const time = new Date().toLocaleTimeString();
+            logEntry.innerHTML = `
+                <div class="log-time">${time}</div>
+                <div class="log-message">${message}</div>
+            `;
+            
+            logEntries.appendChild(logEntry);
+            // Auto-scroll to the bottom
+            logEntries.parentElement.scrollTop = logEntries.parentElement.scrollHeight;
+        }
+
+        // Función para limpiar logs
+        clearLogsBtn.addEventListener('click', () => {
+            logEntries.innerHTML = '';
+            addLog('Logs limpiados');
+        });
+
+        // Verificar contexto seguro
+        if (window.isSecureContext) {
+            statusContainer.textContent = '✅ Contexto seguro (HTTPS) detectado';
+            statusContainer.className = 'status secure';
+            addLog('Contexto seguro detectado. Las notificaciones deberían funcionar.');
+        } else {
+            statusContainer.textContent = '❌ No estamos en un contexto seguro. Las notificaciones no funcionarán.';
+            statusContainer.className = 'status not-secure';
+            addLog('AVISO: No estamos en un contexto seguro. Las notificaciones no funcionarán.');
+        }
+
+        // Función mejorada con más logging para debugging
+        notifyBtn.addEventListener('click', async () => {
+            addLog("Intentando mostrar notificación...");
+            addLog("Permiso de notificación actual: " + Notification.permission);
+            addLog("Contexto seguro: " + window.isSecureContext);
+
+            if (!("Notification" in window)) {
+                addLog("Este navegador no soporta notificaciones");
+                alert("Este navegador no soporta notificaciones");
+                return;
+            }
+
+            try {
+                if (Notification.permission === "granted") {
+                    addLog("Permiso ya concedido, mostrando notificación...");
+                    new Notification("¡Hola de nuevo!", {
+                        body: "Esta es una notificación de prueba",
+                        icon: "https://via.placeholder.com/64x64" // Icono opcional
+                    });
+                    addLog("Notificación mostrada con éxito");
+                } else if (Notification.permission !== "denied") {
+                    addLog("Solicitando permiso para notificaciones...");
+                    const permission = await Notification.requestPermission();
+                    addLog("Permiso obtenido: " + permission);
+                    
+                    if (permission === "granted") {
+                        new Notification("¡Hola!", {
+                            body: "Gracias por permitir notificaciones",
+                            icon: "https://via.placeholder.com/64x64"
+                        });
+                        addLog("Notificación mostrada con éxito después de conceder permiso");
+                    } else {
+                        addLog("El usuario denegó el permiso para notificaciones");
+                    }
+                } else {
+                    addLog("El permiso de notificación fue denegado previamente. Debes habilitarlo manualmente en la configuración del navegador.");
+                    alert("Has bloqueado las notificaciones. Por favor, habilita los permisos en la configuración de tu navegador.");
+                }
+            } catch (error) {
+                addLog("Error con notificaciones: " + error.message);
+                console.error("Error con notificaciones:", error);
+            }
+        });
+
+        // Información inicial
+        addLog("Página cargada correctamente");
+        addLog("User Agent: " + navigator.userAgent);
+        addLog("HTTPS: " + window.location.protocol === "https:");
+    </script>
 </body>
 </html>
