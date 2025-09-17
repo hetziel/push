@@ -16,7 +16,7 @@ self.addEventListener('push', (event) => {
 
     let title = 'Notificación';
     let body = 'Tienes una nueva notificación';
-    let icon = 'https://via.placeholder.com/64/3498db/ffffff?text=Push';
+    let icon = 'https://placehold.co/64/3498db/ffffff?text=Push';
     let tag = 'push-notification';
 
     try {
@@ -45,7 +45,7 @@ self.addEventListener('push', (event) => {
         body: body,
         icon: icon,
         tag: tag,
-        badge: 'https://via.placeholder.com/32/3498db/ffffff?text=!',
+        badge: 'https://placehold.co/32/3498db/ffffff?text=!',
         vibrate: [200, 100, 200],
         actions: [
             {
@@ -100,8 +100,8 @@ self.addEventListener('message', event => {
     console.log('Mostrando notificación de prueba desde el Service Worker');
     const options = {
       body: 'Este es el cuerpo de la notificación de prueba.',
-      icon: 'https://via.placeholder.com/64/2ecc71/ffffff?text=TEST',
-      badge: 'https://via.placeholder.com/32/2ecc71/ffffff?text=!',
+      icon: 'https://placehold.co/64/2ecc71/ffffff?text=TEST',
+      badge: 'https://placehold.co/32/2ecc71/ffffff?text=!',
       tag: 'test-notification'
     };
     event.waitUntil(
